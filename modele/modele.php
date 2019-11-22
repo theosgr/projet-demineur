@@ -41,7 +41,7 @@ class Dao {
 			$statement->bindParam(1, $login);
 			$statement->execute();
 			$result=$statement->fetch(PDO::FETCH_ASSOC);
-			if (password_hash($password, $result["motDePasse"]) == $result["motDePasse"]) return true;
+			if (password_verify($password, $result["motDePasse"])) return true;
 			else return false;
 		}
 		catch(PDOException $e){

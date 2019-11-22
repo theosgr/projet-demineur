@@ -19,39 +19,63 @@ class Vue {
 		</br>
 		mot de passe<input type="password" name="password" id="password"/>
 		<input type="submit" name="connexion" value="connexion"/>
+		<input type="reset" name="effacer" value="Annuler"/>
 	</form>
 </body>
 
 <?php 
-	}
 }
 
-	function genereVueJeu(){
+
+function genereVueJeu(){
+	header("Content-type: text/html; charset=utf-8");
+	?>
+	<html>
+
+
+	<body> 
+		<h1 style="color:red;text-align: center"> Démineur </h1>
 
 
 
+		<form method="post" action="index.php">
+			<input type="submit" name="deconnexion" value="Deconnexion"/>
+			<input type="submit" name="rejouer" value="Rejouer"/>
+		</form>
+
+	</body>
+	</html>
+	<?php
+}
+
+
+
+function genereVueScore(){
+	?>
+
+	Les scores du jeu
+	<?php
+}
+
+
+function genereVueErreur(){
+	header("Content-type: text/html; charset=utf-8");
+	?>
+	<html>
+	<body>
+
+
+
+		<br/>
+		<br/>
+		<form method="post" action="index.php">
+			Pseudo ou mot de passe incorrect
+			<input type="submit" name="retry" value="Réessayer"/>
+		</form>
+		<br/>
+		<br/>
+
+		<?php
 	}
-
-
-
-	function genereVueScore(){
-
-	}
-
-
-	function genereVueErreur($titre, $desc, $link){
-    ?>
-      <h5 class="modal-title" id="exampleModalCenterTitle"><?php echo $titre ?></h5>
-  
-          <div class="modal-body">
-            <p><?php echo $desc ?></p>
-          </div>
-          <div class="modal-footer">
-            <a href="index.php<?php echo $link ?>" class="btn btn-primary">Fermer</a>
-          </div>
-
- 
-    <?php
-  }
-
+}
 ?>

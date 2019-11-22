@@ -18,14 +18,18 @@ class ControleurAuthentification{
 		if(isset($_POST["login"]) && isset($_POST["password"])){
 			if($this->dao->connexion($_POST["login"], $_POST["password"])){
 				$_SESSION["pseudo"] = $_POST["login"];
+				$this->vue->genereVueJeu();
 			}
 			else {
-				$this->vue->genereVueConnexion();
-				$this->vue->genereVueErreur("Erreur","Mauvais identifiant ou mauvais mot de passe","");
+				$this->vue->genereVueErreur();
+				if(isset($_POST["retry"])){
+					$this->vue->genereVueConnexion();
+					unset($_POST["retry"]);
+				}
 			}
-			return;
-		}
+			
+		} else 
 		$this->vue->genereVueConnexion();
-	}
 
+	}
 }
