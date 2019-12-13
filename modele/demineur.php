@@ -10,15 +10,15 @@ class Demineur{
 		$this->matrice=array();
 		$this->visible=array();
 		$this->nbmine=0;
-		for ($x=0; $x < 7; $x++) {
-			for ($y=0; $y < 7; $y++) {
+		for ($x=0; $x < 10; $x++) {
+			for ($y=0; $y < 10; $y++) {
 				$this->matrice[$x][$y]=5;
 				$this->visible[$x][$y]=10;
 			}
 		}
 		while($this->nbmine!=10){
 			$x=rand(1,8);
-			$y=rand(1,8)
+			$y=rand(1,8);
 			if ($this->matrice[$x][$y]!=9) {
 				$this->matrice[$x][$y]=9;
 				$this->nbmine+=1;
@@ -37,6 +37,12 @@ class Demineur{
 				}
 			}
 		}
+	}
+
+	public function isWin(){
+		if($this->nbmine == 0){
+			return True;
+		} else return False;
 	}
 	
 }

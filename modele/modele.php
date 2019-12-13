@@ -56,14 +56,11 @@ class Dao {
 	}
 
 	//fonction modifiant le nombre de parties jouées et gagnées
-	public function gagne($pseudo,$win,$n){
+	public function gagne($pseudo){
 		try{
-			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees = ? + 1 and nbPartiesGagnees = ? + 1 where parties.pseudo = ?;");
-			$statement->bindParam(1, $n);
-			$statement->bindParam(2, $win);
-			$statement->bindParam(3, $pseudo);
+			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees+ 1 and nbPartiesGagnees+ 1 and ratio = nbPartiesGagnees/nbPartiesJouees where parties.pseudo = ?;");
+			$statement->bindParam(1, $pseudo);
 			$statement->execute();
-			$result=$statement->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e){
 			$this->deconnexion();
 			throw new TableAccesException("probleme d'acces a la table parties");
@@ -71,10 +68,39 @@ class Dao {
 
 	}
 
+	//fonction modifiant le nombre de parties jouées et gagnées
+	public function perdu($pseudo){
+		try{
+			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees+1 where parties.pseudo = ?;");
+			$statement->bindParam(1, $pseudo);
+			$statement->execute();
+			} catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("probleme d'acces a la table parties");
+		}
+	}
+
+	//première game
+	public function firstGame($pseudo){
+		try{
+			$statement = $this->connexion->prepare("SELECT count(*) from parties where pseudo = ?");
+			$statement->bindParam(1, $pseudo);
+			$statement->execute();
+			$result=$statement->fetch(PDO::FETCH_ASSOC);
+			if($result[0] == 0){
+				return True;
+			} else return False;
+		} catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("probleme d'acces a la table parties");
+		}
+
+	} 
+
 	//fonction pour la première game 
 	public function firstGameWin($pseudo){
 		try{
-			$statement = $this->connexion->prepare("INSERT into parties values(?,1,1);");
+			$statement = $this->connexion->prepare("INSERT into parties values(?,1,1,1.0);");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
 			$result=$statement->fetch(PDO::FETCH_ASSOC);
@@ -89,7 +115,7 @@ class Dao {
 	//fonction pour la première game lose 
 	public function firstGameLose($pseudo){
 		try{
-			$statement = $this->connexion->prepare("INSERT into parties values(?,1,0);");
+			$statement = $this->connexion->prepare("INSERT into parties values(?,1,0,0.0);");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
 			$result=$statement->fetch(PDO::FETCH_ASSOC);
@@ -105,8 +131,9 @@ class Dao {
 	// si un problème est rencontré, une exception de type TableAccesException est levée
 	public function getPodium(){
 		try{
-			$stmt=$this->connexion->query("SELECT distinct pseudo p, nbPartiesGagnees from parties where p=parties.pseudo;");
-			$res = $stmt->fetchAll();
+			$stmt=$this->connexion->prepare("SELECT pseudo, nbPartiesJouees ,nbPartiesGagnees,ratio from parties order by ratio DESC;");
+			$stmt->execute();
+			$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 			return $res;
 		}catch(PDOException $e){

@@ -21,11 +21,39 @@ class ControleurJeu{
 	}
 
 	public function finDuJeu(){
-		if(isset($_POST["score"])){
-			$this->vue->genereVueScore("win");	
-		}
+		$login = $_SESSION['pseudo'];
+		if($this->dao->firstGame($login)){
+			if($this->demineur->isWin()){
+				$this->dao->firstGameWin($login);
+				$this->vue->genereVueScore("win");
+			}/*else if($this->demineur->isLost()){
+				$this->dao->firstGameLose($login);
+				$this->vue->genereVueScore("lose");
+			}	
+			}*/
+		
+		#else {
+
+		//}
+		//if(isset($_POST["score"])){
+			//$this->vue->genereVueScore("win");	
+		//}
 		
 	}
+}
+
+	public function debutJeu(){
+
+	}
+
+	public function score(){
+		$podium = $this->dao->getPodium();
+		if(isset($_POST["score"])){
+			$this->vue->genereVueScore("win",$podium);	
+		}
+	}
+
+
 
 	public function replay(){
 		if(isset($_POST["rejouer"])){

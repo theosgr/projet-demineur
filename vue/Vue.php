@@ -74,14 +74,14 @@ function genereVueJeu(){
 
 
 
-function genereVueScore($res){
+function genereVueScore($res,$podium){
 	?>
 	Les scores du jeu
 	<?php
 	if($res = "win") {
-		echo "Bravo " . $_SESSION["pseudo"] . "vous avez gagné !";
+		echo "Bravo " . $_SESSION["pseudo"] . " vous avez gagne !";
 	} elseif($res = "lose"){
-		echo "Dommage " . $_SESSION["pseudo"] . "vous avez perdu ...";
+		echo "Dommage " . $_SESSION["pseudo"] . " vous avez perdu ...";
 	}
 	?>
 
@@ -89,9 +89,24 @@ function genereVueScore($res){
 		<tr>
 			<th>Place</th>
 			<th>Pseudo</th>
+			<th>Parties jouees</th>
 			<th>Victoires</th>
-			<th>Ratio parties gagnées / jouées</th>
+			<th>Ratio</th>
 		</tr>
+		<?php
+		$cpt = 1;
+
+		foreach($podium as $row ){
+			echo "<tr><td>".$cpt."</td> <td>". $row["pseudo"] ."</td> <td>". $row["nbPartiesJouees"] ."</td> <td>". $row["nbPartiesGagnees"] ."</td> <td>". $row["ratio"] ."</td></tr>";
+			$cpt++;
+		}
+			
+
+
+
+
+
+		?>
 		<form method="post" action="index.php">
 			<input type="submit" name="rejouer" value="Rejouer"/>
 			<input type="submit" name="deconnexion" value="Deconnexion"/>

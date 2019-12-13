@@ -34,7 +34,10 @@ class Routeur {
 				$this->ctrlJeu->replay();
 			}
 			if(isset($_POST["score"])){
-				$this->ctrlJeu->finDuJeu();
+				$this->ctrlJeu->score();
+			}
+			else{
+				$this->ctrlAuthentification->accueilAuth();
 			}
 
 			
