@@ -2,10 +2,10 @@
 
 // Classe generale de définition d'exception
 class MonException extends Exception{
-  private $chaine;
-  public function __construct($chaine){
-    $this->chaine=$chaine;
-  }
+	private $chaine;
+	public function __construct($chaine){
+		$this->chaine=$chaine;
+	}
 }
 
 // Exception relative à un problème de connexion
@@ -54,6 +54,69 @@ class Dao {
 	public function deconnexion(){
 		$this->connexion=null;
 	}
+
+	//fonction modifiant le nombre de parties jouées et gagnées
+	public function gagne($pseudo,$win,$n){
+		try{
+			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees = ? + 1 and nbPartiesGagnees = ? + 1 where parties.pseudo = ?;");
+			$statement->bindParam(1, $n);
+			$statement->bindParam(2, $win);
+			$statement->bindParam(3, $pseudo);
+			$statement->execute();
+			$result=$statement->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("probleme d'acces a la table parties");
+		}
+
+	}
+
+	//fonction pour la première game 
+	public function firstGameWin($pseudo){
+		try{
+			$statement = $this->connexion->prepare("INSERT into parties values(?,1,1);");
+			$statement->bindParam(1, $pseudo);
+			$statement->execute();
+			$result=$statement->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("probleme d'acces a la table parties");
+		}
+
+
+	}
+
+	//fonction pour la première game lose 
+	public function firstGameLose($pseudo){
+		try{
+			$statement = $this->connexion->prepare("INSERT into parties values(?,1,0);");
+			$statement->bindParam(1, $pseudo);
+			$statement->execute();
+			$result=$statement->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("probleme d'acces a la table parties");
+		}
+
+	}
+
+	//collecte les informations permettant d'établir les statistiques concernant les
+	//3 meilleurs joueurs
+	// si un problème est rencontré, une exception de type TableAccesException est levée
+	public function getPodium(){
+		try{
+			$stmt=$this->connexion->query("SELECT distinct pseudo p, nbPartiesGagnees from parties where p=parties.pseudo;");
+			$res = $stmt->fetchAll();
+
+			return $res;
+		}catch(PDOException $e){
+			$this->deconnexion();
+			throw new TableAccesException("problème avec la table parties");
+		}
+	}
+
+
+
 
 }
 
