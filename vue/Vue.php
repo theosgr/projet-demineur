@@ -27,12 +27,8 @@ class Vue {
 }
 
 
-function genereVueJeu(){
+function genereVueJeu($x,$y){
 	header("Content-type: text/html; charset=utf-8");
-	$nbBombes = 10
-	//while($nbBombes <= 10) {
-		
-	//}
 
 	?>
 	<html>
@@ -50,7 +46,7 @@ function genereVueJeu(){
 			for($i = 0; $i <= 7; $i++){
 				echo '<tr>';
 				for($j = 0; $j <= 7;$j++){
-					echo '<td style="width:30px;height:30px;text-align:center;border:solid black 1px;;"></td>';
+					echo '<td style="width:30px;height:30px;text-align:center;border:solid black 1px;;"><a href="index.php?x='.$j.'&y='.$i.'"alt="coordonnees demineur">X</a></td>';
 
 				}
 				echo '</tr>';

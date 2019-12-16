@@ -18,7 +18,7 @@ class ControleurAuthentification{
 		if(isset($_POST["login"]) && isset($_POST["password"])){
 			if($this->dao->connexion($_POST["login"], $_POST["password"])){
 				$_SESSION["pseudo"] = $_POST["login"];
-				$this->vue->genereVueJeu();
+				$this->vue->genereVueJeu(-1,-1);
 			}
 			else {
 				$this->vue->genereVueErreur();

@@ -24,21 +24,17 @@ class Routeur {
 		}
 
 		if(isset($_SESSION["pseudo"])){
+			//session_destroy();
 			if(isset($_POST["deconnexion"])) {
-				unset($_SESSION["pseudo"]);
-				session_destroy();
 				$this->ctrlAuthentification->accueilAuth();
+				session_unset();
+				session_destroy();
 				return;
 			}
-			if(isset($_POST["rejouer"])){
-				$this->ctrlJeu->replay();
+			else {
+				$this->ctrlJeu->jeu();
 			}
-			if(isset($_POST["score"])){
-				$this->ctrlJeu->score();
-			}
-			else{
-				$this->ctrlAuthentification->accueilAuth();
-			}
+
 
 			
 

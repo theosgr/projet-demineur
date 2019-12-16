@@ -14,51 +14,75 @@ class ControleurJeu{
 		$this->vue= new Vue();
 		$this->dao= new Dao();
 		$this->demineur = new Demineur();
+		$_SESSION["grille"] = $this->demineur;
 	}
 
-	public function sortieJeu(){
-		$this->vue->genereVueConnexion();
+	public function continuer(){
+		$this->vue->genereVueJeu(-1,-1);
 	}
 
-	public function finDuJeu(){
-		$login = $_SESSION['pseudo'];
-		if($this->dao->firstGame($login)){
-			if($this->demineur->isWin()){
-				$this->dao->firstGameWin($login);
-				$this->vue->genereVueScore("win");
-			}/*else if($this->demineur->isLost()){
-				$this->dao->firstGameLose($login);
-				$this->vue->genereVueScore("lose");
-			}	
-			}*/
-		
-		#else {
+	public function jeu(){
+		if(isset($_SESSION["pseudo"])){
 
-		//}
-		//if(isset($_POST["score"])){
-			//$this->vue->genereVueScore("win");	
-		//}
-		
-	}
-}
+			$podium = $this->dao->getPodium();
+			if(isset($_POST["rejouer"])){
+				if($this->dao->firstGame($login)){
+					$this->dao->firstGameLose($login);
+				} else {
+					$this->dao->perdu($login);
+				}
+				$this->demineur = new Demineur();
+				$_SESSION["grille"] = $this->demineur;
+				$this->vue->genereVueJeu(-1,-1);
+			}
 
-	public function debutJeu(){
+			if(isset($_GET["x"]) and isset($_GET["y"])){
+				if(($this->demineur->isLost() == False) and ($this->demineur->isWin() == False)){
+					$_SESSION['grille']->decouvrir($x,$y);
+					$val=$_SESSION['grille']->attribution_nombre($x,$y);
+					$this->vue->genereVueJeu($x,$y,$val);	
+				}
 
-	}
+				else {
+					$login = $_SESSION['pseudo'];
+					if($this->dao->firstGame($login)){
+						if($this->demineur->isWin()){
+							$this->dao->firstGameWin($login);
+							$this->vue->genereVueScore("win",$podium);
+						}else if($this->demineur->isLost()){
+							$this->dao->firstGameLose($login);
+							$this->vue->genereVueScore("lose",$podium);
+						}	
+					}
+					else{
+						if($this->demineur->isWin()){
+							$this->dao->gagne($login);
+							$this->vue->genereVueScore("win",$podium);
+						}
+						elseif($this->demineur->isLost()){
+							$this->dao->perdu($login);
+							$this->vue->genereVueScore("lose",$podium);
+						}
+					}
 
-	public function score(){
-		$podium = $this->dao->getPodium();
-		if(isset($_POST["score"])){
-			$this->vue->genereVueScore("win",$podium);	
+
+				}
+				
+			}
+
 		}
+		
+		
 	}
 
+	//Méthode à revoir, je ne suis pas sur de son utilisation
+	public function score(){
+		
+	}
 
 
 	public function replay(){
-		if(isset($_POST["rejouer"])){
-		$this->vue->genereVueJeu();
-	}
+		
 	}
 
 
