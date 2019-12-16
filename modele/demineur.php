@@ -24,6 +24,17 @@ class Demineur{
 				$this->nbmine+=1;
 			}
 		}
+
+		$cpt=0;
+		if($this->matrice[$x][$y]!=9){
+			for($i=$x-1;$i<=$x+1;$i++){
+				for ($j=$y-1;$j<=$y+1;$j++){
+					if($this->matrice[$i][$j] == 9){
+						$cpt+=1;
+					}
+				}
+			}
+		}
 	}
 	public function decouvrir($x,$y)
 	{
@@ -39,14 +50,10 @@ class Demineur{
 		}
 	}
 
-	public function isOver(){
-		
-	}
-
 	public function isWin(){
-		//if($this->nbmine == 0){
-		//	return True;
-		//} else return False;
+		if($this->visible == $this->matrice){
+			return True;
+		} else return False;
 	}
 
 	public function isLost($x,$y){
@@ -55,21 +62,6 @@ class Demineur{
 		} else return False;
 	}
 
-
-	//attribue à une case qui n'est pas une bombe le nombre de bombe autour 
-	public function attribution_nombre($x,$y){
-		$cpt=0;
-		if($this->matrice[$x][$y]!=9){
-			for($i=$x-1;$i<=$x+1;$i++){
-				for ($j=$y-1;$j<=$y+1;$j++){
-					if($this->matrice[$i][$j] == 9){
-						$cpt+=1;
-					}
-				}
-			}
-		}
-		return $cpt;
-	}
 	
 	
 }

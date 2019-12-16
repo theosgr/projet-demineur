@@ -58,7 +58,7 @@ class Dao {
 	//fonction modifiant le nombre de parties jouées et gagnées
 	public function gagne($pseudo){
 		try{
-			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees+ 1 and nbPartiesGagnees+ 1 and ratio = nbPartiesGagnees/nbPartiesJouees where parties.pseudo = ?;");
+			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees =  nbPartiesJouees + 1 and nbPartiesGagnees =  nbPartiesGagnees + 1 and ratio = nbPartiesGagnees/nbPartiesJouees where pseudo = ?;");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
 		} catch(PDOException $e){
@@ -71,7 +71,7 @@ class Dao {
 	//fonction modifiant le nombre de parties jouées et gagnées
 	public function perdu($pseudo){
 		try{
-			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees+1 where parties.pseudo = ?;");
+			$statement = $this->connexion->prepare("UPDATE parties set nbPartiesJouees = nbPartiesJouees + 1  where pseudo = ?;");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
 			} catch(PDOException $e){
@@ -83,11 +83,12 @@ class Dao {
 	//première game
 	public function firstGame($pseudo){
 		try{
-			$statement = $this->connexion->prepare("SELECT count(*) from parties where pseudo = ?");
+			$statement = $this->connexion->prepare("SELECT count(*) as ligne from parties where pseudo = ?");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
 			$result=$statement->fetch(PDO::FETCH_ASSOC);
-			if($result[0] == 0){
+			$statement->closeCursor();
+			if($result["ligne"] == 0){
 				return True;
 			} else return False;
 		} catch(PDOException $e){
@@ -103,7 +104,7 @@ class Dao {
 			$statement = $this->connexion->prepare("INSERT into parties values(?,1,1,1.0);");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
-			$result=$statement->fetch(PDO::FETCH_ASSOC);
+			//$result=$statement->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e){
 			$this->deconnexion();
 			throw new TableAccesException("probleme d'acces a la table parties");
@@ -118,7 +119,7 @@ class Dao {
 			$statement = $this->connexion->prepare("INSERT into parties values(?,1,0,0.0);");
 			$statement->bindParam(1, $pseudo);
 			$statement->execute();
-			$result=$statement->fetch(PDO::FETCH_ASSOC);
+			//$result=$statement->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e){
 			$this->deconnexion();
 			throw new TableAccesException("probleme d'acces a la table parties");
